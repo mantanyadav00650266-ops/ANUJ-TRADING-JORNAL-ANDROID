@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ANUJ Trading Journal V3</title>
+<style>
+:root{--bg:#07101f;--panel:#0d182a;--panel2:#111f34;--line:#223451;--text:#eef5ff;--muted:#8ea2bf;--cyan:#39d6ff;--green:#37e59a;--red:#ff607d;--amber:#ffc857;--purple:#9b7cff;--shadow:0 16px 40px #0006}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0%,#112d48 0,#07101f 38%,#050b14 100%);color:var(--text);font:14px Inter,Segoe UI,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{display:flex;min-height:100vh}.side{width:235px;background:#081321ee;border-right:1px solid var(--line);padding:22px 16px;position:sticky;top:0;height:100vh}.brand{display:flex;gap:11px;align-items:center;margin-bottom:30px}.logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--cyan),var(--purple));display:grid;place-items:center;font-weight:900;color:#06101d}.brand b{display:block}.brand small{color:var(--muted)}.nav button{width:100%;text-align:left;background:none;border:0;color:var(--muted);padding:12px;border-radius:10px;margin:3px 0}.nav button.active,.nav button:hover{background:#12243c;color:white}.side-note{position:absolute;bottom:20px;left:16px;right:16px;background:#0d1c2f;border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--muted);font-size:12px}
+.main{flex:1;padding:25px;max-width:1600px;margin:auto;width:100%}.top{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:22px}.top h1{font-size:24px;margin:0}.top p{margin:5px 0 0;color:var(--muted)}.actions{display:flex;gap:8px}.btn{border:1px solid var(--line);background:#102039;color:white;padding:10px 14px;border-radius:9px}.btn.primary{background:linear-gradient(135deg,#19bfe7,#7868ff);border:0}.btn.green{background:#0d5a45;border-color:#1b8f70}.btn.red{background:#5b2030;border-color:#a83b57}
+.page{display:none}.page.active{display:block}.grid{display:grid;gap:14px}.cards{grid-template-columns:repeat(6,minmax(130px,1fr))}.card{background:linear-gradient(180deg,#101e33,#0b1627);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}.label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}.value{font-size:25px;font-weight:800;margin-top:7px}.good{color:var(--green)}.bad{color:var(--red)}.accent{color:var(--cyan)}
+.section{margin-top:18px}.section-title{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}.section-title h2{font-size:16px;margin:0}.panel{background:#0b1728d9;border:1px solid var(--line);border-radius:14px;padding:16px}.two{grid-template-columns:1.2fr .8fr}.three{grid-template-columns:repeat(3,1fr)}.four{grid-template-columns:repeat(4,1fr)}
+table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;border-bottom:1px solid #1b2a42;text-align:left;white-space:nowrap}th{color:#a9bad2;font-size:11px;text-transform:uppercase}tr:hover td{background:#102039}.pill{padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}.win{background:#0d4e3c;color:#67efb0}.loss{background:#5b2030;color:#ff93a7}.be{background:#4a3a18;color:#ffd76e}
+canvas{width:100%;height:240px;display:block}.chart-wrap{height:260px}
+.bar{height:8px;background:#17263b;border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:99px}
+.matrix{overflow:auto}.matrix table{min-width:780px}.matrix td,.matrix th{text-align:center}.matrix th:first-child,.matrix td:first-child{text-align:left}.heat{border-radius:7px;padding:10px 6px;font-weight:700}.h1{background:#123f36;color:#71f0bb}.h2{background:#183b39;color:#63ddb1}.h3{background:#20324b;color:#a9c7e9}.h4{background:#4a2b2d;color:#ff9aaa}.h5{background:#612331;color:#ff8da1}
+form .formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.field label{display:block;color:var(--muted);font-size:11px;margin:0 0 5px}.field input,.field select,.field textarea{width:100%;background:#081423;border:1px solid var(--line);color:white;border-radius:8px;padding:10px}.field textarea{min-height:75px;resize:vertical}.span2{grid-column:span 2}.span4{grid-column:span 4}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}.filters input,.filters select{background:#081423;border:1px solid var(--line);color:white;border-radius:8px;padding:9px}
+.insight{border-left:3px solid var(--cyan);padding:12px;background:#0d1e32;border-radius:8px;margin:7px 0}.insight b{color:white}.small{font-size:12px;color:var(--muted)}
+.rank{display:flex;align-items:center;gap:10px;margin:9px 0}.rank .name{width:110px}.rank .num{width:65px;text-align:right;font-weight:700}
+@media(max-width:1100px){.cards{grid-template-columns:repeat(3,1fr)}.two,.three,.four{grid-template-columns:1fr}.side{width:190px}form .formgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.app{display:block}.side{position:relative;width:100%;height:auto}.side-note{display:none}.nav{display:flex;overflow:auto}.nav button{min-width:110px}.main{padding:14px}.cards{grid-template-columns:repeat(2,1fr)}form .formgrid{grid-template-columns:1fr}.span2,.span4{grid-column:auto}.top{align-items:flex-start;flex-direction:column}}
+
+.calendarGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.calHead{color:var(--muted);font-size:11px;text-align:center;padding:7px}.calDay{min-height:86px;background:#081423;border:1px solid var(--line);border-radius:9px;padding:7px;cursor:pointer}.calDay:hover{border-color:var(--cyan)}.calNum{font-weight:800}.calR{font-size:12px;font-weight:800;margin-top:8px}.calTrades{font-size:10px;color:var(--muted);margin-top:4px}.profit{border-color:#1d6d57;background:#0b2a24}.lossDay{border-color:#713247;background:#2b111c}.today{box-shadow:inset 0 0 0 1px var(--cyan)}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="logo">A</div><div><b>ANUJ JOURNAL</b><small>Trading Lab V3</small></div></div>
+  <div class="nav">
+    <button class="active" data-page="dashboard">◈ Dashboard</button>
+    <button data-page="journal">＋ Add / Journal</button>
+    <button data-page="analytics">▦ Deep Analytics</button>
+    <button data-page="calendar">▣ Calendar</button>
+    <button data-page="ai">🤖 AI Assistant</button>
+    <button data-page="data">⇅ Data & Backup</button>
+  </div>
+  <div class="side-note"><b>Core focus</b><br>Find the session + setup combinations that actually make money — not just overall win rate.</div>
+</aside>
+<main class="main">
+<header class="top">
+  <div><h1 id="pageTitle">Performance Dashboard</h1><p id="pageSub">Session × Setup intelligence for your trading journal.</p></div>
+  <div class="actions"><button class="btn" onclick="resetDemo()">Reset demo</button><button class="btn primary" onclick="showPage('journal')">＋ New trade</button></div>
+</header>
+
+<section id="dashboard" class="page active">
+  <div class="grid cards">
+    <div class="card"><div class="label">Total trades</div><div class="value" id="kTrades">0</div></div>
+    <div class="card"><div class="label">Win rate</div><div class="value accent" id="kWin">0%</div></div>
+    <div class="card"><div class="label">Net R</div><div class="value good" id="kR">0R</div></div>
+    <div class="card"><div class="label">Pips</div><div class="value" id="kPips">0</div></div>
+    <div class="card"><div class="label">Profit factor</div><div class="value" id="kPF">0</div></div>
+    <div class="card"><div class="label">Max drawdown</div><div class="value bad" id="kDD">0R</div></div>
+  </div>
+
+  <div class="grid two section">
+    <div class="panel">
+      <div class="section-title"><h2>🏆 Best session + setup</h2><span class="small">minimum 1 trade</span></div>
+      <div id="bestCombo" class="insight">Add trades to discover your best combination.</div>
+      <div class="section-title" style="margin-top:18px"><h2>Session performance</h2></div>
+      <div id="sessionRanks"></div>
+    </div>
+    <div class="panel">
+      <div class="section-title"><h2>Equity curve (R)</h2></div>
+      <div class="chart-wrap"><canvas id="equity"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid two section">
+    <div class="panel">
+      <div class="section-title"><h2>Setup performance</h2><span class="small">ranked by Net R</span></div>
+      <div id="setupRanks"></div>
+    </div>
+    <div class="panel">
+      <div class="section-title"><h2>Outcome mix</h2></div>
+      <div class="chart-wrap"><canvas id="outcome"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section panel">
+    <div class="section-title"><h2>🔥 SESSION × SETUP HEATMAP</h2><span class="small">Win rate / Net R / trades</span></div>
+    <div class="matrix" id="comboMatrix"></div>
+  </div>
+
+  <div class="grid three section">
+    <div class="panel"><div class="section-title"><h2>Best entry</h2></div><div id="entryInsight"></div></div>
+    <div class="panel"><div class="section-title"><h2>Best direction</h2></div><div id="typeInsight"></div></div>
+    <div class="panel"><div class="section-title"><h2>PRO vs COUNTER</h2></div><div id="pcInsight"></div></div>
+  </div>
+</section>
+
+<section id="journal" class="page">
+<div class="panel">
+<div class="section-title"><h2>Trade entry — matches your original journal</h2><span class="small">All fields feed the analytics automatically</span></div>
+<form id="tradeForm"><div class="formgrid">
+<div class="field"><label>Date</label><input id="fDate" type="date" required></div>
+<div class="field"><label>Day</label><input id="fDay" readonly></div>
+<div class="field"><label>Open time</label><input id="fOpen" type="time"></div>
+<div class="field"><label>Close time</label><input id="fClose" type="time"></div>
+<div class="field"><label>Outcome</label><select id="fOutcome"><option>WIN</option><option>LOSS</option><option>BE</option></select></div>
+<div class="field"><label>Session</label><select id="fSession"><option>SYDNEY</option><option>TOKYO</option><option>LONDON</option><option>NEW YORK</option></select></div>
+<div class="field"><label>Entry</label><select id="fEntry"><option>EXTREME</option><option>FLIP</option></select></div>
+<div class="field"><label>Pair</label><input id="fPair" value="XAUUSD"></div>
+<div class="field"><label>Stop loss (pips)</label><input id="fSL" type="number" step="any"></div>
+<div class="field"><label>Pips</label><input id="fPips" type="number" step="any"></div>
+<div class="field"><label>Planned risk reward</label><input id="fRR" type="number" step="any"></div>
+<div class="field"><label>Actual R:F</label><input id="fActual" type="number" step="any" required></div>
+<div class="field"><label>Setup</label><select id="fSetup"><option>FIBONACCI</option><option>PATTERN</option><option>S/R</option><option>TREND LINE</option></select></div>
+<div class="field"><label>Time frame</label><select id="fTF"><option>DAILY</option><option>4HOUR</option><option>1HOUR</option><option>30m</option><option>15m</option><option>5m</option></select></div>
+<div class="field"><label>Type</label><select id="fType"><option>LONG</option><option>SHORT</option></select></div>
+<div class="field"><label>PRO / COUNTER</label><select id="fPC"><option>PRO</option><option>COUNTER</option></select></div>
+<div class="field"><label>Bias</label><select id="fBias"><option>BULLISH</option><option>BEARISH</option><option>NEUTRAL</option></select></div>
+<div class="field span2"><label>Trade logic</label><textarea id="fLogic" placeholder="Why did you take this trade?"></textarea></div>
+<div class="field span2"><label>News / catalyst</label><textarea id="fNews" placeholder="Fed, CPI, USD, oil, geopolitical risk, no major news..."></textarea></div>
+<div class="span4"><button class="btn primary" type="submit">Save trade</button> <button class="btn" type="button" onclick="document.getElementById('tradeForm').reset();setToday()">Clear</button></div>
+</div></form></div>
+<div class="panel section">
+<div class="section-title"><h2>Trade history</h2><span class="small" id="tradeCount"></span></div>
+<div class="filters"><input id="search" placeholder="Search pair / logic / setup"><select id="filterSession"><option value="">All sessions</option><option>SYDNEY</option><option>TOKYO</option><option>LONDON</option><option>NEW YORK</option></select><select id="filterSetup"><option value="">All setups</option><option>FIBONACCI</option><option>PATTERN</option><option>S/R</option><option>TREND LINE</option></select><select id="filterOutcome"><option value="">All outcomes</option><option>WIN</option><option>LOSS</option><option>BE</option></select></div>
+<div class="matrix"><table><thead><tr><th>Date</th><th>Outcome</th><th>Session</th><th>Entry</th><th>Pair</th><th>Setup</th><th>TF</th><th>Type</th><th>PRO/C</th><th>Bias</th><th>Actual R</th><th>Pips</th><th></th></tr></thead><tbody id="tradeRows"></tbody></table></div>
+</div>
+</section>
+
+<section id="analytics" class="page">
+<div class="panel">
+<div class="section-title"><h2>Deep analytics</h2><span class="small">Every category from your Sheets is analysed</span></div>
+<div class="filters"><select id="aSession"><option value="">All sessions</option><option>SYDNEY</option><option>TOKYO</option><option>LONDON</option><option>NEW YORK</option></select><select id="aSetup"><option value="">All setups</option><option>FIBONACCI</option><option>PATTERN</option><option>S/R</option><option>TREND LINE</option></select><select id="aBias"><option value="">All bias</option><option>BULLISH</option><option>BEARISH</option><option>NEUTRAL</option></select><select id="aType"><option value="">All type</option><option>LONG</option><option>SHORT</option></select></div>
+<div id="analyticsContent"></div>
+</div>
+</section>
+
+<section id="calendar" class="page">
+<div class="panel">
+<div class="section-title"><h2>Trading Calendar</h2><div class="actions"><button class="btn" onclick="changeCalMonth(-1)">←</button><span id="calTitle" class="small" style="padding:10px 4px"></span><button class="btn" onclick="changeCalMonth(1)">→</button></div></div>
+<div class="small" style="margin-bottom:10px">Green = profitable day · Red = losing day · Click a day to see its trades.</div>
+<div id="calendarGrid" class="calendarGrid"></div>
+<div id="dayDetail" class="panel" style="margin-top:12px;display:none"></div>
+</div>
+</section>
+
+<section id="ai" class="page">
+<div class="panel">
+<div class="section-title"><h2>🤖 AI Trading Assistant</h2><span class="small">Uses only your journal data</span></div>
+<div class="grid three">
+<div class="panel"><b>Performance summary</b><div id="aiSummary" class="insight"></div></div>
+<div class="panel"><b>Pattern findings</b><div id="aiPatterns" class="insight"></div></div>
+<div class="panel"><b>Process review</b><div id="aiProcess" class="insight"></div></div>
+</div>
+<div class="actions" style="margin-top:12px"><button class="btn primary" onclick="renderAI()">🔄 Analyze journal</button><button class="btn" onclick="showPage('journal')">＋ Add trade</button></div>
+</div>
+</section>
+
+<section id="data" class="page">
+<div class="grid two">
+<div class="panel"><h2>Backup & migration</h2><p class="small">Your journal is stored locally in this browser. Export regularly so you never lose your data.</p><button class="btn primary" onclick="exportJSON()">Export JSON</button> <button class="btn" onclick="exportCSV()">Export CSV</button><br><br><input type="file" id="importFile" accept=".json"><button class="btn" onclick="importJSON()">Import JSON</button></div>
+<div class="panel"><h2>What this V3 tracks</h2><div class="insight">Session → Sydney / Tokyo / London / New York</div><div class="insight">Setup → Fibonacci / Pattern / S/R / Trend Line</div><div class="insight">Cross analysis → Session × Setup, Setup × Entry, Setup × Bias, Session × Type</div><div class="insight">Risk → Actual R, Net R, Profit Factor, Drawdown, Expectancy</div></div>
+</div>
+</section>
+</main></div>
+
+<script>
+const KEY='anuj_trading_journal_v3';
+const demo=[
+{date:'2026-08-31',day:'MONDAY',open:'08:20',close:'13:55',outcome:'LOSS',session:'TOKYO',entry:'EXTREME',pair:'XAUUSD',sl:200,pips:-190,rr:3.2,actual:-1,setup:'FIBONACCI',tf:'4HOUR',type:'LONG',pc:'COUNTER',bias:'BULLISH',logic:'Fibonacci 0.78 + heavy support',news:''},
+{date:'2026-09-02',day:'WEDNESDAY',open:'09:15',close:'17:00',outcome:'WIN',session:'TOKYO',entry:'EXTREME',pair:'XAUUSD',sl:170,pips:1600,rr:9,actual:9,setup:'PATTERN',tf:'4HOUR',type:'LONG',pc:'COUNTER',bias:'BULLISH',logic:'.5 fib + fakeout and M neck line break',news:''},
+{date:'2026-09-02',day:'WEDNESDAY',open:'15:45',close:'19:30',outcome:'WIN',session:'LONDON',entry:'EXTREME',pair:'XAUUSD',sl:100,pips:800,rr:7.5,actual:8,setup:'S/R',tf:'30m',type:'LONG',pc:'PRO',bias:'BULLISH',logic:'fake out then resistance hold',news:''},
+{date:'2026-09-03',day:'THURSDAY',open:'16:00',close:'18:20',outcome:'WIN',session:'LONDON',entry:'FLIP',pair:'XAUUSD',sl:60,pips:600,rr:12,actual:12,setup:'S/R',tf:'30m',type:'LONG',pc:'PRO',bias:'BULLISH',logic:'resistance halt 30mins S/R',news:''}
+];
+let trades=JSON.parse(localStorage.getItem(KEY)||'null')||demo;
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem(KEY,JSON.stringify(trades));renderAll()}
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(p).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));let t={dashboard:['Performance Dashboard','Session × Setup intelligence for your trading journal.'],journal:['Trade Journal','Log every trade with the same fields as your original Sheets.'],analytics:['Deep Analytics','Compare sessions, setups, entries, bias, type and PRO/COUNTER.'],calendar:['Trading Calendar','Daily profit/loss and trade count — TradeZella-style overview.'],ai:['AI Journal Assistant','Find patterns in your own journal data and review your process.'],data:['Data & Backup','Export, import and protect your journal data.']}[p];$('pageTitle').textContent=t[0];$('pageSub').textContent=t[1]}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+function setToday(){let d=new Date().toISOString().slice(0,10);$('fDate').value=d;daySync()}
+function daySync(){if($('fDate').value){let d=new Date($('fDate').value+'T12:00');$('fDay').value=d.toLocaleDateString('en-US',{weekday:'long'}).toUpperCase()}}
+$('fDate').onchange=daySync;setToday();
+$('tradeForm').onsubmit=e=>{e.preventDefault();let t={date:$('fDate').value,day:$('fDay').value,open:$('fOpen').value,close:$('fClose').value,outcome:$('fOutcome').value,session:$('fSession').value,entry:$('fEntry').value,pair:$('fPair').value.toUpperCase(),sl:+$('fSL').value||0,pips:+$('fPips').value||0,rr:+$('fRR').value||0,actual:+$('fActual').value||0,setup:$('fSetup').value,tf:$('fTF').value,type:$('fType').value,pc:$('fPC').value,bias:$('fBias').value,logic:$('fLogic').value,news:$('fNews').value};trades.push(t);save();e.target.reset();setToday();showPage('dashboard')};
+function completed(a=trades){return a.filter(t=>t.outcome!=='BE')}
+function stats(a){let w=a.filter(t=>t.outcome==='WIN').length,l=a.filter(t=>t.outcome==='LOSS').length,r=a.reduce((s,t)=>s+(+t.actual||0),0),p=a.reduce((s,t)=>s+(+t.pips||0),0);let wins=a.filter(t=>t.actual>0).reduce((s,t)=>s+t.actual,0),lossAbs=Math.abs(a.filter(t=>t.actual<0).reduce((s,t)=>s+t.actual,0));return{n:a.length,w,l,wr:a.length?w/a.length*100:0,r,p,pf:lossAbs?wins/lossAbs:(wins?Infinity:0),exp:a.length?r/a.length:0}}
+function group(field,a=trades){let m={};a.forEach(t=>{let k=t[field]||'—';(m[k]??=[]).push(t)});return Object.entries(m).map(([name,x])=>({name,...stats(x)})).sort((a,b)=>b.r-a.r)}
+function combo(){let m={};trades.forEach(t=>{let k=t.session+' × '+t.setup;(m[k]??=[]).push(t)});return Object.entries(m).map(([name,x])=>({name,...stats(x),session:x[0].session,setup:x[0].setup})).sort((a,b)=>b.r-a.r)}
+function fmtR(n){return (n>=0?'+':'')+n.toFixed(2)+'R'}
+function renderAll(){renderKPIs();renderRanks();renderMatrix();renderInsights();renderEquity();renderOutcome();renderTrades();renderAnalytics()}
+function renderKPIs(){let s=stats(trades);$('kTrades').textContent=s.n;$('kWin').textContent=s.wr.toFixed(1)+'%';$('kR').textContent=fmtR(s.r);$('kR').className='value '+(s.r>=0?'good':'bad');$('kPips').textContent=s.p.toFixed(0);$('kPF').textContent=Number.isFinite(s.pf)?s.pf.toFixed(2):'∞';let peak=0,eq=0,dd=0;trades.forEach(t=>{eq+=+t.actual||0;peak=Math.max(peak,eq);dd=Math.min(dd,eq-peak)});$('kDD').textContent=dd.toFixed(2)+'R'}
+function rankHTML(arr){let max=Math.max(1,...arr.map(x=>Math.abs(x.r)));return arr.map(x=>`<div class="rank"><div class="name">${x.name}</div><div style="flex:1"><div class="bar"><i style="width:${Math.min(100,Math.abs(x.r)/max*100)}%"></i></div></div><div class="num ${x.r>=0?'good':'bad'}">${fmtR(x.r)}</div><div class="small">${x.wr.toFixed(0)}% · ${x.n} trades</div></div>`).join('')||'<div class="small">No trades yet.</div>'}
+function renderRanks(){let s=group('session'),u=group('setup'),c=combo();$('sessionRanks').innerHTML=rankHTML(s);$('setupRanks').innerHTML=rankHTML(u);let b=c[0];$('bestCombo').innerHTML=b?`<b>${b.session} + ${b.setup}</b><br><span class="good">${fmtR(b.r)}</span> · ${b.wr.toFixed(1)}% win rate · ${b.n} trades · ${b.p.toFixed(0)} pips`:'Add trades to discover your best combination.'}
+function renderMatrix(){let sessions=['SYDNEY','TOKYO','LONDON','NEW YORK'],setups=['FIBONACCI','PATTERN','S/R','TREND LINE'];let h='<table><thead><tr><th>Session \\ Setup</th>'+setups.map(s=>`<th>${s}</th>`).join('')+'</tr></thead><tbody>';sessions.forEach(se=>{h+=`<tr><td><b>${se}</b></td>`;setups.forEach(su=>{let a=trades.filter(t=>t.session===se&&t.setup===su),z=stats(a);let cl=z.n===0?'h3':z.r>0?'h1':z.r<0?'h5':'h3';h+=`<td><div class="heat ${cl}">${z.n?z.wr.toFixed(0)+'%':'—'}<br><span class="small">${z.n}T · ${z.r>=0?'+':''}${z.r.toFixed(1)}R</span></div></td>`});h+='</tr>'});h+='</tbody></table>';$('comboMatrix').innerHTML=h}
+function bestField(field){let a=group(field);return a[0]}
+function insight(field,id){let a=group(field),b=a[0];$(id).innerHTML=b?`<b>${b.name}</b><br><span class="good">${b.wr.toFixed(1)}% WR</span> · ${fmtR(b.r)} · ${b.n} trades`:'—'}
+function renderInsights(){insight('entry','entryInsight');insight('type','typeInsight');insight('pc','pcInsight')}
+function setupCanvas(c){let d=devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;c.width=w*d;c.height=h*d;let x=c.getContext('2d');x.scale(d,d);return [x,w,h]}
+function renderEquity(){let [x,w,h]=setupCanvas($('equity'));x.clearRect(0,0,w,h);let vals=[0],e=0;trades.forEach(t=>{e+=+t.actual||0;vals.push(e)});let min=Math.min(...vals),max=Math.max(...vals);if(min===max){min-=1;max+=1}x.strokeStyle='#263a56';x.beginPath();x.moveTo(0,h/2);x.lineTo(w,h/2);x.stroke();x.strokeStyle='#39d6ff';x.lineWidth=2;x.beginPath();vals.forEach((v,i)=>{let xx=i/(vals.length-1||1)*w,yy=h-((v-min)/(max-min))*h*.8-10;i?x.lineTo(xx,yy):x.moveTo(xx,yy)});x.stroke();x.fillStyle='#8ea2bf';x.font='11px Arial';x.fillText(max.toFixed(1)+'R',4,14);x.fillText(min.toFixed(1)+'R',4,h-5)}
+function renderOutcome(){let [x,w,h]=setupCanvas($('outcome'));let vals=[trades.filter(t=>t.outcome==='WIN').length,trades.filter(t=>t.outcome==='LOSS').length,trades.filter(t=>t.outcome==='BE').length],tot=Math.max(1,vals.reduce((a,b)=>a+b,0));let colors=['#37e59a','#ff607d','#ffc857'];let start=-Math.PI/2;vals.forEach((v,i)=>{let ang=v/tot*Math.PI*2;x.beginPath();x.moveTo(w/2,h/2);x.arc(w/2,h/2,75,start,start+ang);x.closePath();x.fillStyle=colors[i];x.fill();start+=ang});x.beginPath();x.fillStyle='#0b1728';x.arc(w/2,h/2,42,0,Math.PI*2);x.fill();x.fillStyle='white';x.textAlign='center';x.font='bold 22px Arial';x.fillText(trades.length,w/2,h/2+7);x.font='11px Arial';x.fillText('TRADES',w/2,h/2+23);x.textAlign='left';['WIN','LOSS','BE'].forEach((n,i)=>{x.fillStyle=colors[i];x.fillRect(12,20+i*22,9,9);x.fillStyle='#9fb0c7';x.fillText(n+' '+vals[i],28,29+i*22)})}
+function renderTrades(){let q=($('search').value||'').toLowerCase(),fs=$('filterSession').value,fu=$('filterSetup').value,fo=$('filterOutcome').value;let a=trades.map((t,i)=>({...t,i})).filter(t=>(!q||JSON.stringify(t).toLowerCase().includes(q))&&(!fs||t.session===fs)&&(!fu||t.setup===fu)&&(!fo||t.outcome===fo));$('tradeCount').textContent=a.length+' shown / '+trades.length+' total';$('tradeRows').innerHTML=a.slice().reverse().map(t=>`<tr><td>${t.date}</td><td><span class="pill ${t.outcome==='WIN'?'win':t.outcome==='LOSS'?'loss':'be'}">${t.outcome}</span></td><td>${t.session}</td><td>${t.entry}</td><td>${t.pair}</td><td>${t.setup}</td><td>${t.tf}</td><td>${t.type}</td><td>${t.pc}</td><td>${t.bias}</td><td class="${t.actual>=0?'good':'bad'}">${fmtR(+t.actual||0)}</td><td>${t.pips}</td><td><button class="btn red" onclick="delTrade(${t.i})">×</button></td></tr>`).join('')}
+['search','filterSession','filterSetup','filterOutcome'].forEach(id=>$(id).oninput=renderTrades);
+function delTrade(i){if(confirm('Delete this trade?')){trades.splice(i,1);save()}}
+function filteredAnalytics(){return trades.filter(t=>(!$('aSession').value||t.session===$('aSession').value)&&(!$('aSetup').value||t.setup===$('aSetup').value)&&(!$('aBias').value||t.bias===$('aBias').value)&&(!$('aType').value||t.type===$('aType').value))}
+['aSession','aSetup','aBias','aType'].forEach(id=>$(id).oninput=renderAnalytics);
+function tableFor(title,field,a){let rows=group(field,a);return `<div class="panel section"><div class="section-title"><h2>${title}</h2></div><div class="matrix"><table><thead><tr><th>Category</th><th>Trades</th><th>Wins</th><th>Losses</th><th>Win Rate</th><th>Net R</th><th>Avg R</th><th>Pips</th><th>PF</th></tr></thead><tbody>${rows.map(x=>`<tr><td><b>${x.name}</b></td><td>${x.n}</td><td class="good">${x.w}</td><td class="bad">${x.l}</td><td>${x.wr.toFixed(1)}%</td><td class="${x.r>=0?'good':'bad'}">${fmtR(x.r)}</td><td>${x.exp.toFixed(2)}R</td><td>${x.p.toFixed(0)}</td><td>${Number.isFinite(x.pf)?x.pf.toFixed(2):'∞'}</td></tr>`).join('')}</tbody></table></div></div>`}
+function renderAnalytics(){let a=filteredAnalytics(),html=tableFor('SESSION PERFORMANCE','session',a)+tableFor('SETUP PERFORMANCE','setup',a)+tableFor('ENTRY PERFORMANCE','entry',a)+tableFor('TYPE PERFORMANCE','type',a)+tableFor('PRO / COUNTER','pc',a)+tableFor('BIAS PERFORMANCE','bias',a)+tableFor('TIMEFRAME PERFORMANCE','tf',a);let m={};a.forEach(t=>{let k=t.session+' × '+t.setup;(m[k]??=[]).push(t)});let combos=Object.entries(m).map(([name,x])=>({name,...stats(x)})).sort((a,b)=>b.r-a.r);html+=`<div class="panel section"><div class="section-title"><h2>SESSION × SETUP leaderboard</h2></div><div class="matrix"><table><thead><tr><th>Combination</th><th>Trades</th><th>Win Rate</th><th>Net R</th><th>Avg R</th><th>Pips</th></tr></thead><tbody>${combos.map(x=>`<tr><td><b>${x.name}</b></td><td>${x.n}</td><td>${x.wr.toFixed(1)}%</td><td class="${x.r>=0?'good':'bad'}">${fmtR(x.r)}</td><td>${x.exp.toFixed(2)}R</td><td>${x.p.toFixed(0)}</td></tr>`).join('')}</tbody></table></div></div>`;$('analyticsContent').innerHTML=html}
+function resetDemo(){if(confirm('Reset journal to the four sample trades from your screenshots?')){trades=JSON.parse(JSON.stringify(demo));save()}}
+function exportJSON(){download('anuj_trading_journal_v3.json',JSON.stringify(trades,null,2),'application/json')}
+function exportCSV(){let keys=['date','day','open','close','outcome','session','entry','pair','sl','pips','rr','actual','setup','tf','type','pc','bias','logic','news'];let rows=[keys.join(','),...trades.map(t=>keys.map(k=>`"${String(t[k]??'').replaceAll('"','""')}"`).join(','))];download('anuj_trading_journal_v3.csv',rows.join('\n'),'text/csv')}
+function download(name,data,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+function importJSON(){let f=$('importFile').files[0];if(!f)return alert('Choose a JSON file first.');let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!Array.isArray(x))throw Error();trades=x;save();alert('Imported successfully.')}catch(e){alert('Invalid JSON file.')}};r.readAsText(f)}
+
+let calDate=new Date();
+function changeCalMonth(n){calDate.setMonth(calDate.getMonth()+n);renderCalendar()}
+function renderCalendar(){let y=calDate.getFullYear(),m=calDate.getMonth();$('calTitle').textContent=calDate.toLocaleDateString('en-US',{month:'long',year:'numeric'});let h=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<div class="calHead">${x}</div>`).join('');let first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();for(let i=0;i<first;i++)h+='<div></div>';for(let d=1;d<=days;d++){let ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,a=trades.filter(t=>t.date===ds),r=a.reduce((z,t)=>z+(+t.actual||0),0),cl=r>0?'profit':r<0?'lossDay':'';let today=ds===new Date().toISOString().slice(0,10)?' today':'';h+=`<div class="calDay ${cl}${today}" onclick="showDay('${ds}')"><div class="calNum">${d}</div><div class="calR">${a.length?(r>=0?'+':'')+r.toFixed(2)+'R':'—'}</div><div class="calTrades">${a.length?a.length+' trade'+(a.length>1?'s':''):''}</div></div>`}$('calendarGrid').innerHTML=h}
+function showDay(ds){let a=trades.filter(t=>t.date===ds),r=a.reduce((z,t)=>z+(+t.actual||0),0);let d=new Date(ds+'T12:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});$('dayDetail').style.display='block';$('dayDetail').innerHTML=`<div class="section-title"><h2>${d}</h2><span class="${r>=0?'good':'bad'}">${a.length?(r>=0?'+':'')+r.toFixed(2)+'R':'No trades'}</span></div>${a.length?'<div class="matrix"><table><thead><tr><th>Pair</th><th>Session</th><th>Setup</th><th>Outcome</th><th>R</th><th>Pips</th></tr></thead><tbody>'+a.map(t=>`<tr><td>${t.pair}</td><td>${t.session}</td><td>${t.setup}</td><td>${t.outcome}</td><td class="${t.actual>=0?'good':'bad'}">${(+t.actual||0).toFixed(2)}R</td><td>${t.pips}</td></tr>`).join('')+'</tbody></table></div>':'<div class="small">No trades recorded on this day.</div>'}`}
+function renderAI(){let s=stats(trades),sess=group('session'),setup=group('setup'),pc=group('pc'),bias=group('bias');let bestCombo=combo()[0];let loss=trades.filter(t=>t.outcome==='LOSS');let avgLoss=loss.length?loss.reduce((a,t)=>a+(+t.actual||0),0)/loss.length:0;let avgWin=trades.filter(t=>t.outcome==='WIN').length?trades.filter(t=>t.outcome==='WIN').reduce((a,t)=>a+(+t.actual||0),0)/trades.filter(t=>t.outcome==='WIN').length:0;$('aiSummary').innerHTML=`<b>${s.n} trades</b><br>${s.wr.toFixed(1)}% win rate · ${fmtR(s.r)} net · ${s.p.toFixed(0)} pips · PF ${Number.isFinite(s.pf)?s.pf.toFixed(2):'∞'}.`;$('aiPatterns').innerHTML=`Best session by Net R: <b>${sess[0]?.name||'—'}</b>.<br>Best setup by Net R: <b>${setup[0]?.name||'—'}</b>.<br>Best session + setup combo: <b>${bestCombo?.name||'—'}</b>.<br>PRO/COUNTER: <b>${pc[0]?.name||'—'}</b> has the highest Net R in this journal.`;$('aiProcess').innerHTML=`Average win: <b>${avgWin.toFixed(2)}R</b> · Average loss: <b>${avgLoss.toFixed(2)}R</b>.<br>${loss.length?'You have '+loss.length+' losing trades. Review their session, setup, entry, bias and trade logic for repeated mistakes.':'No losing trades are recorded yet.'}<br><br><span class="small">This assistant summarizes your historical journal; it does not predict price or tell you what trade to take.</span>`}
+renderCalendar();renderAI();
+renderAll();
+window.addEventListener('resize',()=>{renderEquity();renderOutcome()});
+</script>
+</body></html>
